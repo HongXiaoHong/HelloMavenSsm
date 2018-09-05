@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
+  <display-name>HelloMavenSsm</display-name>
+  <!-- 
+  org.springframework.web.filter.CharacterEncodingFilter;
+		CharacterEncodingFilter charEn;
+		charEn.setEncoding(encoding);
+		charEn.setForceEncoding(forceEncoding);
+   -->
+  <filter>
+  	<filter-name>charEncodingFilter</filter-name>
+  	<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+  	<init-param>
+  		<param-name>encoding</param-name>
+  		<param-value>UTF-8</param-value>
+  	</init-param>
+  	<init-param>
+  		<param-name>forceEncoding</param-name>
+  		<param-value>true</param-value>
+  	</init-param>
+  </filter>
+  <filter-mapping>
+  	<filter-name>charEncodingFilter</filter-name>
+  	<url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <servlet>
+  <!-- 这里不需要配置前端控制器的原因是Spring核心配置文件采用了固定的格式
+  也就前端控制器配置名加-servlet.xml 也就是QianKong-servlet.xml
+   -->
+  	<servlet-name>QianKong</servlet-name>
+  	<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>QianKong</servlet-name>
+  	<url-pattern>/</url-pattern>
+  	<url-pattern>*.do</url-pattern>
+  </servlet-mapping>
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>

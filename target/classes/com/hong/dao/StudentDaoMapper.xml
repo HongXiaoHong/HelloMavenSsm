@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hong.dao.StudentDao">
+
+	<resultMap type="Student" id="sudent">
+	<!-- 
+	private int id;
+		private String stuName;
+		private String sex;
+		private Squad sq;
+	 -->
+	 <result property="id" column="id"/>
+	 <result property="stuName" column="stuName"/>
+	 <result property="sex" column="sex"/>
+	 <association property="sq" select="getSquad"
+	 column="squadId" javaType="Squad" >
+	 <result property="id" column="id"/>
+	 <result property="sqName" column="sqName"/>
+	 </association>
+	</resultMap>
+	<select id="getSquad" parameterType="_int" resultType="Squad">
+	SELECT id,sqName
+	FROM squad
+	WHERE id=#{id}
+	</select>
+	<select id="getStudentById" parameterType="_int" resultMap="sudent">
+		SELECT id,stuName,sex,squadId
+		FROM student
+		WHERE id=#{id}
+	</select>
+	<!-- getAllStudent -->
+	<select id="getAllStudent" resultType="Student">
+	SELECT id, stuName, sex
+	FROM student
+	ORDER BY stuName
+	</select>
+</mapper>

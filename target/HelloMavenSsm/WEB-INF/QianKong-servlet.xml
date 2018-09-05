@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:p="http://www.springframework.org/schema/p"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans  
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context  
+        http://www.springframework.org/schema/context/spring-context-3.2.xsd
+        http://www.springframework.org/schema/mvc  
+        http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+        http://www.springframework.org/schema/tx  
+        http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+        " >
+        <context:annotation-config></context:annotation-config>
+        <context:component-scan base-package="com.hong"></context:component-scan>
+        <mvc:annotation-driven></mvc:annotation-driven>
+        <mvc:default-servlet-handler/>
+        
+        
+        <!-- pro.setLocations(locations); -->
+        <bean id="propertyPlaceholder" 
+        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	        <property name="locations">
+	        	<list><value>classpath:mysql.properties</value></list>
+	        </property>
+        </bean>
+        <!-- 配置数据源 
+        org.apache.commons.dbcp.BasicDataSource
+		BasicDataSource dataSource;
+		dataSource.setDriverClassName(driverClassName);
+		dataSource.setUrl(url);
+		dataSource.setUsername(username);
+		dataSource.setPassword(password);
+		dataSource.setInitialSize(initialSize);
+		dataSource.setMaxIdle(maxIdle);
+        -->
+        <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+        p:driverClassName="${mysql.driver}" p:url="${mysql.url}"
+        p:username="${mysql.username}" p:password="${mysql.password}"
+        p:initialSize="3" p:maxIdle="10"
+        ></bean>
+        <!-- 
+        org.mybatis.spring.SqlSessionFactoryBean
+		SqlSessionFactoryBean factory;
+		factory.setDataSource(dataSource);
+		factory.setConfigLocation(configLocation);
+         -->
+        <bean id="factory" class="org.mybatis.spring.SqlSessionFactoryBean"
+        p:dataSource-ref="dataSource" p:configLocation="classpath:mybatis.cfg.xml"
+        p:mapperLocations="classpath*:com/hong/dao/*.xml"
+        >
+        <!-- 自动扫描mapping.xml文件p:mapperLocations="classpath*:com/hong/dao/*.xml" -->  
+        </bean>
+        <!-- 
+        org.mybatis.spring.mapper.MapperScannerConfigurer
+		MapperScannerConfigurer con;
+		con.setBasePackage(basePackage);
+		con.setSqlSessionFactoryBeanName(sqlSessionFactoryName);
+         -->
+        <bean id="configurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer"
+        p:basePackage="com.hong.dao" p:sqlSessionFactoryBeanName="factory"
+        ></bean>
+        
+        <!-- 配置事务
+        org.springframework.jdbc.datasource.DataSourceTransactionManager;
+		DataSourceTransactionManager manager;
+		manager.setDataSource(dataSource);
+         -->
+         <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+         p:dataSource-ref="dataSource"
+         ></bean>
+         <!-- 
+         上传处理器
+         org.springframework.web.multipart.commons.CommonsMultipartResolver;
+		CommonsMultipartResolver resolver;
+		resolver.setDefaultEncoding(defaultEncoding);
+		resolver.setUploadTempDir(uploadTempDir);
+		resolver.setMaxUploadSize(maxUploadSize);
+          -->
+         <bean id="multiResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
+         p:defaultEncoding="UTF-8" p:uploadTempDir="/temp/" 
+         p:maxUploadSize="52428800"
+         ></bean>
+         <!-- 视图解析器
+         org.springframework.web.servlet.view.JstlView;
+		JstlView jView;
+		org.springframework.web.servlet.view.InternalResourceViewResolver;
+		InternalResourceViewResolver in;
+		in.setViewClass(viewClass);
+		in.setPrefix(prefix);
+		in.setSuffix(suffix);
+          -->
+         <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+         p:viewClass="org.springframework.web.servlet.view.JstlView" 
+         p:prefix="/WEB-INF/jsp/" p:suffix=".jsp"
+         ></bean>
+         <tx:annotation-driven transaction-manager="txManager"/>
+          
+		</beans>

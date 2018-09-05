@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hong.dao.SquadDao">
+	<resultMap type="Squad" id="squads">
+	<result property="id" column="id"/>
+	<result property="sqName" column="sqName"/>
+	<collection property="students" ofType="Student">
+	<result property="id" column="sId"/>
+	<result property="stuName" column="sName"/>
+	<result property="sex" column="sex"/>
+	</collection>
+	</resultMap>
+	<select id="getAllSquad" resultMap="squads">
+	SELECT sq.id, sq.sqName, stu.id sId, stu.stuName sName, stu.sex sex
+	FROM	squad sq
+	LEFT JOIN	student stu
+	ON	sq.id=stu.squadId
+	</select>
+</mapper>
